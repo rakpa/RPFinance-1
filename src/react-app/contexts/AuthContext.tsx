@@ -1,12 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  picture?: string;
-  given_name?: string;
-}
+import { supabase } from '@/supabaseClient';
+import { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
@@ -34,37 +28,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isPending, setIsPending] = useState(true);
 
   useEffect(() => {
-    // Check for stored user on mount
-    const storedUser = localStorage.getItem('mintary_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('mintary_user');
-      }
-    }
-    setIsPending(false);
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setIsPending(false);
+    });
+
+    return () => {
+      authListener?.unsubscribe();
+    };
   }, []);
 
-  const signInWithGoogle = () => {
-    // Simulate Google sign-in for demo purposes
-    // In a real app, you'd integrate with Google OAuth
-    const mockUser: User = {
-      id: `user_${Date.now()}`,
-      email: 'demo@mintary.app',
-      name: 'Demo User',
-      given_name: 'Demo',
-      picture: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('mintary_user', JSON.stringify(mockUser));
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('mintary_user');
   };
 
   const value: AuthContextType = {

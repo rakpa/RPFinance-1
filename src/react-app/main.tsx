@@ -2,6 +2,7 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "@/react-app/index.css";
 import App from "@/react-app/App.tsx";
+import { AuthProvider } from "@/react-app/contexts/AuthContext.tsx";
 
 // Load Inter font from Google Fonts
 function FontLoader() {
@@ -28,7 +29,9 @@ function FontLoader() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <FontLoader />
-    <App />
+    <AuthProvider>
+      <FontLoader />
+      <App />
+    </AuthProvider>
   </StrictMode>
 );
