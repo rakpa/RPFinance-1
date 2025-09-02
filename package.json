@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@supabase/supabase-js": "^2.38.0",
+    "@supabase/supabase-js": "^2.56.1",
     "lucide-react": "^0.510.0",
     "openai": "^5.10.1",
     "postgres": "^3.4.0",
@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@eslint/js": "9.25.1",
-    "@getmocha/vite-plugins": "latest",
     "@getmocha/users-service": "^0.0.4",
+    "@getmocha/vite-plugins": "latest",
     "@types/node": "22.14.1",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
